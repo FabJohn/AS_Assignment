@@ -41,6 +41,11 @@ builder.Services.ConfigureApplicationCookie(Config =>
 {
     Config.LoginPath = "/Login";
 });
+// Add services to the container.
+builder.Services.AddRazorPages();
+
+// Register EmailService
+builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 
