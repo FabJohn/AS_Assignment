@@ -7,7 +7,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<AuthDbContext>();
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    // Configure lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1); // Lockout duration
+    options.Lockout.MaxFailedAccessAttempts = 3; // Max failed attempts before lockout
+    options.Lockout.AllowedForNewUsers = true; // Enable lockout for new users
+
+    // Configure password policies
+    options.Password.RequiredLength = 8; // Minimum password length
+    options.Password.RequireDigit = true; // Require at least one digit
+    options.Password.RequireLowercase = true; // Require at least one lowercase letter
+    options.Password.RequireUppercase = true; // Require at least one uppercase letter
+    options.Password.RequireNonAlphanumeric = true; // Require at least one special character
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+})
+.AddEntityFrameworkStores<AuthDbContext>()
+.AddDefaultTokenProviders();
+
 builder.Services.AddHttpClient();
 
 // Add session services

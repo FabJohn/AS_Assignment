@@ -4,6 +4,9 @@
     ViewData["Title"] = "Home page";
 }
 
+<!-- Add Font Awesome for the eye icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <div class="text-center">
     <h1 class="display-4">Welcome, @Model.CurrentUser?.FullName!</h1>
 </div>
@@ -61,4 +64,107 @@
             <img src="@Model.CurrentUser.PhotoPath" alt="Profile Photo" class="img-thumbnail" style="max-width: 200px;" />
         </div>
     }
+
+    <div class="mt-5">
+        <h2>Change Password</h2>
+        <form method="post" asp-page-handler="ChangePassword">
+            <div class="mb-3">
+                <label class="form-label" for="CurrentPassword">Current Password</label>
+                <div class="input-group">
+                    <input type="password" name="CurrentPassword" class="form-control" id="currentPassword" required />
+                    <button type="button" class="btn btn-outline-secondary" id="toggleCurrentPassword">
+                        <i class="fa fa-eye-slash" id="currentPasswordEyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="NewPassword">New Password</label>
+                <div class="input-group">
+                    <input type="password" name="NewPassword" class="form-control" id="newPassword" required />
+                    <button type="button" class="btn btn-outline-secondary" id="toggleNewPassword">
+                        <i class="fa fa-eye-slash" id="newPasswordEyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="ConfirmPassword">Confirm New Password</label>
+                <div class="input-group">
+                    <input type="password" name="ConfirmPassword" class="form-control" id="confirmPassword" required />
+                    <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">
+                        <i class="fa fa-eye-slash" id="confirmPasswordEyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if the password was changed successfully
+            const passwordChangeMessage = "@TempData["Message"]";
+            if (passwordChangeMessage) {
+                alert(passwordChangeMessage); // Show confirmation pop-up
+            }
+
+            // Toggle current password visibility
+            const toggleCurrentPassword = document.getElementById('toggleCurrentPassword');
+            const currentPasswordInput = document.getElementById('currentPassword');
+            const currentPasswordEyeIcon = document.getElementById('currentPasswordEyeIcon');
+
+            if (toggleCurrentPassword && currentPasswordInput && currentPasswordEyeIcon) {
+                toggleCurrentPassword.addEventListener('click', function () {
+                    if (currentPasswordInput.type === 'password') {
+                        currentPasswordInput.type = 'text';
+                        currentPasswordEyeIcon.classList.remove('fa-eye-slash');
+                        currentPasswordEyeIcon.classList.add('fa-eye');
+                    } else {
+                        currentPasswordInput.type = 'password';
+                        currentPasswordEyeIcon.classList.remove('fa-eye');
+                        currentPasswordEyeIcon.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+
+            // Toggle new password visibility
+            const toggleNewPassword = document.getElementById('toggleNewPassword');
+            const newPasswordInput = document.getElementById('newPassword');
+            const newPasswordEyeIcon = document.getElementById('newPasswordEyeIcon');
+
+            if (toggleNewPassword && newPasswordInput && newPasswordEyeIcon) {
+                toggleNewPassword.addEventListener('click', function () {
+                    if (newPasswordInput.type === 'password') {
+                        newPasswordInput.type = 'text';
+                        newPasswordEyeIcon.classList.remove('fa-eye-slash');
+                        newPasswordEyeIcon.classList.add('fa-eye');
+                    } else {
+                        newPasswordInput.type = 'password';
+                        newPasswordEyeIcon.classList.remove('fa-eye');
+                        newPasswordEyeIcon.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+
+            // Toggle confirm password visibility
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const confirmPasswordEyeIcon = document.getElementById('confirmPasswordEyeIcon');
+
+            if (toggleConfirmPassword && confirmPasswordInput && confirmPasswordEyeIcon) {
+                toggleConfirmPassword.addEventListener('click', function () {
+                    if (confirmPasswordInput.type === 'password') {
+                        confirmPasswordInput.type = 'text';
+                        confirmPasswordEyeIcon.classList.remove('fa-eye-slash');
+                        confirmPasswordEyeIcon.classList.add('fa-eye');
+                    } else {
+                        confirmPasswordInput.type = 'password';
+                        confirmPasswordEyeIcon.classList.remove('fa-eye');
+                        confirmPasswordEyeIcon.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -12,5 +12,7 @@ namespace WebApplication1.Model
         public string AboutMe { get; set; } // About Me
         public string PhotoPath { get; set; } // Path to the uploaded photo
         public string? SessionToken { get; set; } // Session token for tracking active sessions
+        // Add password history
+        public List<string> PasswordHistory { get; set; } = new List<string>();
     }
 }
