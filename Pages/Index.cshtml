@@ -1,0 +1,64 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome, @Model.CurrentUser?.FullName!</h1>
+</div>
+
+<div class="container mt-5">
+    <h2>User Information</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Full Name</td>
+                <td>@Model.CurrentUser?.FullName</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>@Model.CurrentUser?.Email</td>
+            </tr>
+            <tr>
+                <td>Encrypted Credit Card No</td>
+                <td>@Model.CurrentUser?.CreditCardNo</td> <!-- Encrypted credit card number -->
+            </tr>
+            <tr>
+                <td>Credit Card No</td>
+                <td>@Model.DecryptCreditCard(Model.CurrentUser?.CreditCardNo)</td> <!-- Decrypted credit card number -->
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>@Model.CurrentUser?.Gender</td>
+            </tr>
+            <tr>
+                <td>Mobile No</td>
+                <td>@Model.CurrentUser?.MobileNo</td>
+            </tr>
+            <tr>
+                <td>Delivery Address</td>
+                <td>@Model.CurrentUser?.DeliveryAddress</td>
+            </tr>
+            <tr>
+                <td>About Me</td>
+                <td>@Model.CurrentUser?.AboutMe</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Display the user's photo -->
+    @if (!string.IsNullOrEmpty(Model.CurrentUser?.PhotoPath))
+    {
+        <div class="mt-4">
+            <h3>Profile Photo</h3>
+            <img src="@Model.CurrentUser.PhotoPath" alt="Profile Photo" class="img-thumbnail" style="max-width: 200px;" />
+        </div>
+    }
+</div>

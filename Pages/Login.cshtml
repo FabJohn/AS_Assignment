@@ -1,0 +1,90 @@
+﻿@page
+@model WebApplication1.Pages.LoginModel
+@{
+}
+
+<!-- Add Font Awesome for the eye icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="container mt-5">
+	<div class="row justify-content-center align-items-center">
+		<div class="col-sm-12 col-md-12 col-lg-4">
+			<h1 class="mb-3">Login</h1>
+
+			<!-- Show error message if login fails -->
+			@if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert" id="error-message">
+					@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+				</div>
+			}
+
+			<form method="post">
+				<div class="mb-3">
+					<label class="form-label" asp-for="LModel.Email">Email Address</label>
+					<input type="text" asp-for="LModel.Email" class="form-control" id="email" />
+					<span asp-validation-for="LModel.Email" class="text-danger"></span>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" asp-for="LModel.Password">Password</label>
+					<div class="input-group">
+						<input type="password" asp-for="LModel.Password" class="form-control" id="password"
+							value="@Model.LModel.Password" autocomplete="current-password" />
+						<button type="button" class="btn btn-outline-secondary" id="togglePassword">
+							<i class="fa fa-eye-slash" id="eyeIcon"></i>
+						</button>
+					</div>
+					<span asp-validation-for="LModel.Password" class="text-danger"></span>
+				</div>
+
+				<div class="mb-3 form-check">
+					<input type="checkbox" asp-for="LModel.RememberMe" class="form-check-input" />
+					<label class="form-check-label" asp-for="LModel.RememberMe">Remember Me?</label>
+				</div>
+
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary">Login</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const togglePassword = document.getElementById('togglePassword');
+			const passwordInput = document.getElementById('password');
+			const eyeIcon = document.getElementById('eyeIcon');
+			const emailInput = document.getElementById('email');
+			const errorMessage = document.getElementById('error-message');
+
+			// Toggle password visibility
+			if (togglePassword && passwordInput && eyeIcon) {
+				togglePassword.addEventListener('click', function () {
+					if (passwordInput.type === 'password') {
+						passwordInput.type = 'text';
+						eyeIcon.classList.remove('fa-eye-slash');
+						eyeIcon.classList.add('fa-eye');
+					} else {
+						passwordInput.type = 'password';
+						eyeIcon.classList.remove('fa-eye');
+						eyeIcon.classList.add('fa-eye-slash');
+					}
+				});
+			}
+
+			// Hide error message when typing in email or password fields
+			if (emailInput && passwordInput && errorMessage) {
+				emailInput.addEventListener('input', function () {
+					errorMessage.style.display = 'none';
+				});
+
+				passwordInput.addEventListener('input', function () {
+					errorMessage.style.display = 'none';
+				});
+			}
+		});
+	</script>
+}

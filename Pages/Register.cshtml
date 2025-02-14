@@ -1,0 +1,235 @@
+﻿@page
+@model WebApplication1.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Fresh Farm Market - Membership Registration";
+}
+
+<!-- Add Font Awesome for the eye icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+@section Head {
+    <script src="https://www.google.com/recaptcha/api.js?render=@Model.RecaptchaSiteKey"></script>
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <h1 class="mb-3 text-center">Fresh Farm Market - Membership Registration</h1>
+
+            <!-- Show error message if registration fails -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert" id="error-message">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                </div>
+            }
+
+            <form method="post" id="registerForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <!-- Full Name -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.FullName">Full Name</label>
+                    <input type="text" asp-for="RModel.FullName" class="form-control" value="@Model.RModel.FullName" />
+                    <span asp-validation-for="RModel.FullName" class="text-danger"></span>
+                </div>
+
+                <!-- Credit Card No -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.CreditCardNo">Credit Card No</label>
+                    <input type="text" asp-for="RModel.CreditCardNo" class="form-control" value="@Model.RModel.CreditCardNo" />
+                    <span asp-validation-for="RModel.CreditCardNo" class="text-danger"></span>
+                </div>
+
+                <!-- Gender -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Gender">Gender</label>
+                    <select asp-for="RModel.Gender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span asp-validation-for="RModel.Gender" class="text-danger"></span>
+                </div>
+
+                <!-- Mobile No -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.MobileNo">Mobile No</label>
+                    <input type="text" asp-for="RModel.MobileNo" class="form-control" value="@Model.RModel.MobileNo" />
+                    <span asp-validation-for="RModel.MobileNo" class="text-danger"></span>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.DeliveryAddress">Delivery Address</label>
+                    <textarea asp-for="RModel.DeliveryAddress" class="form-control" rows="3">@Model.RModel.DeliveryAddress</textarea>
+                    <span asp-validation-for="RModel.DeliveryAddress" class="text-danger"></span>
+                </div>
+
+                <!-- Email Address -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Email">Email Address</label>
+                    <input type="email" asp-for="RModel.Email" class="form-control" value="@Model.RModel.Email" />
+                    <span asp-validation-for="RModel.Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Password">Password</label>
+                    <div class="input-group">
+                        <input type="password" asp-for="RModel.Password" class="form-control" id="password" value="@Model.RModel.Password" autocomplete="new-password" />
+                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                            <i class="fa fa-eye-slash" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="RModel.Password" class="text-danger"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.ConfirmPassword">Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" asp-for="RModel.ConfirmPassword" class="form-control" id="confirmPassword" value="@Model.RModel.ConfirmPassword" autocomplete="new-password" />
+                        <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">
+                            <i class="fa fa-eye-slash" id="eyeIconConfirm"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <!-- Photo Upload -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Photo">Upload Photo (.JPG only)</label>
+                    <input type="file" asp-for="RModel.Photo" class="form-control" accept=".jpg,.jpeg" />
+                    <span asp-validation-for="RModel.Photo" class="text-danger"></span>
+                </div>
+
+                <!-- About Me -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.AboutMe">About Me</label>
+                    <textarea asp-for="RModel.AboutMe" class="form-control" rows="4">@Model.RModel.AboutMe</textarea>
+                    <span asp-validation-for="RModel.AboutMe" class="text-danger"></span>
+                </div>
+
+                <!-- reCAPTCHA -->
+                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" />
+
+                <!-- Submit Button -->
+                <div class="mb-3">
+                    <button type="submit" id="registerButton" class="btn btn-primary w-100">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            console.log('Page loaded. reCAPTCHA site key: @Model.RecaptchaSiteKey');
+
+            // Toggle password visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+
+            if (togglePassword && passwordInput && eyeIcon) {
+                togglePassword.addEventListener('click', function () {
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        eyeIcon.classList.remove('fa-eye-slash');
+                        eyeIcon.classList.add('fa-eye');
+                    } else {
+                        passwordInput.type = 'password';
+                        eyeIcon.classList.remove('fa-eye');
+                        eyeIcon.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+
+            if (toggleConfirmPassword && confirmPasswordInput && eyeIconConfirm) {
+                toggleConfirmPassword.addEventListener('click', function () {
+                    if (confirmPasswordInput.type === 'password') {
+                        confirmPasswordInput.type = 'text';
+                        eyeIconConfirm.classList.remove('fa-eye-slash');
+                        eyeIconConfirm.classList.add('fa-eye');
+                    } else {
+                        confirmPasswordInput.type = 'password';
+                        eyeIconConfirm.classList.remove('fa-eye');
+                        eyeIconConfirm.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+
+            // Hide error message when typing in any field
+            const errorMessage = document.getElementById('error-message');
+            const formFields = document.querySelectorAll('#registerForm input, #registerForm textarea, #registerForm select');
+
+            if (errorMessage && formFields) {
+                formFields.forEach(field => {
+                    field.addEventListener('input', function () {
+                        errorMessage.style.display = 'none';
+                    });
+                });
+            }
+
+            // Handle form submission with reCAPTCHA
+            $('#registerForm').on('submit', function (e) {
+                e.preventDefault();
+                console.log('Form submission started');
+
+                // Clear any existing error messages
+                $('.alert-danger').remove();
+
+                // Set button to loading state
+                const button = document.getElementById('registerButton');
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+
+                console.log('Executing reCAPTCHA verification...');
+
+                try {
+                    grecaptcha.ready(function () {
+                        console.log('reCAPTCHA is ready');
+                        grecaptcha.execute('@Model.RecaptchaSiteKey', { action: 'register' })
+                            .then(function (token) {
+                                console.log('Received reCAPTCHA token');
+                                document.getElementById('g-recaptcha-response').value = token;
+                                console.log('Token set in form');
+
+                                $('#registerForm')[0].submit();
+                            })
+                            .catch(function (error) {
+                                console.error('reCAPTCHA error: ' + error);
+                                button.disabled = false;
+                                button.innerHTML = 'Register';
+                                showError('reCAPTCHA verification failed. Please try again.');
+                            });
+                    });
+                } catch (error) {
+                    console.error('Error in reCAPTCHA execution: ' + error);
+                    button.disabled = false;
+                    button.innerHTML = 'Register';
+                    showError('An error occurred during form submission. Please try again.');
+                }
+            });
+
+            // Function to show error messages
+            function showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger mt-3';
+                errorDiv.role = 'alert';
+                errorDiv.textContent = message;
+                $('#registerForm').prepend(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000); // Remove after 5 seconds
+            }
+        });
+    </script>
+}
